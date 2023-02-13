@@ -46,9 +46,9 @@ export class TodoController {
     return this.todoService.markAsInActive(params.id);
   }
 
-  @Delete()
+  @Delete(':id')
   @ApiParam({ name: 'id', required: true })
-  delete(@Param() params: { id: string }): Promise<ToDo> {
+  delete(@Param() params: { id: string }): Promise<boolean> {
     return this.todoService.delete(params.id);
   }
 }

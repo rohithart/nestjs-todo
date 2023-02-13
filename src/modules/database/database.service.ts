@@ -44,8 +44,8 @@ export class DataBaseService {
     return Promise.resolve(this.data[dataIndex]);
   }
 
-  delete(id: string): Promise<ToDo[]> {
+  delete(id: string): Promise<boolean> {
     this.data = this.data.filter((t) => t.id !== id);
-    return Promise.resolve(this.data);
+    return Promise.resolve(true);
   }
 }
