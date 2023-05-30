@@ -1,37 +1,48 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
-import { ToDo } from 'src/models/ToDo';
-import { DataBaseService } from 'src/modules/database/database.service';
+import { ToDo, ToDoDocument } from 'src/models/ToDo';
 
 @Injectable()
 export class TodoService {
-  constructor(private readonly database: DataBaseService) {}
+  constructor(@InjectModel(ToDo.name) private todoModel: Model<ToDoDocument>) {}
 
   getAll(): Promise<ToDo[]> {
-    return this.database.getAll();
+    return this.todoModel.find().exec();
   }
 
   get(id: string): Promise<ToDo> {
-    return this.database.get(id);
+    return this.todoModel.findOne({ _id: id }).exec();
   }
 
   create(todo: ToDo): Promise<ToDo> {
-    return this.database.create(todo);
+    const newToDo = new this.todoModel(todo);
+    return newToDo.save();
   }
 
-  update(todo: ToDo): Promise<ToDo> {
-    return this.database.update(todo);
+  update(id: string, body: unknown): Promise<ToDo> {
+    return this.todoModel
+      .findOneAndUpdate({ _id: id }, body, { new: true })
+      .exec();
   }
 
-  delete(id: string): Promise<boolean> {
-    return this.database.delete(id);
+  delete(id: string): Promise<unknown> {
+    return this.todoModel
+      .findOneAndRemove({
+        _id: id,
+      })
+      .exec();
   }
 
   // we can remove this and use the existing update function itself.
   markAsInActive(id: string): Promise<ToDo> {
-    return this.get(id).then((todo: ToDo) => {
-      todo.is_active = false;
-      return this.update(todo);
-    });
+    return this.todoModel
+      .findOneAndUpdate(
+        { _id: id },
+        { $set: { is_active: true } },
+        { new: true },
+      )
+      .exec();
   }
 }

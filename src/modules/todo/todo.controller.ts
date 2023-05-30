@@ -23,7 +23,7 @@ export class TodoController {
     return this.todoService.get(params.id);
   }
 
-  @Get('all')
+  @Get()
   getAll(): Promise<ToDo[]> {
     return this.todoService.getAll();
   }
@@ -34,10 +34,11 @@ export class TodoController {
     return this.todoService.create(body);
   }
 
-  @Put()
+  @Put(':id')
+  @ApiParam({ name: 'id', required: true })
   @ApiBody({})
-  update(@Body() body: ToDo): Promise<ToDo> {
-    return this.todoService.update(body);
+  update(@Param() params: { id: string }, @Body() body: any): Promise<ToDo> {
+    return this.todoService.update(params.id, body);
   }
 
   @Put('inactive/:id')
@@ -48,7 +49,7 @@ export class TodoController {
 
   @Delete(':id')
   @ApiParam({ name: 'id', required: true })
-  delete(@Param() params: { id: string }): Promise<boolean> {
+  delete(@Param() params: { id: string }): Promise<unknown> {
     return this.todoService.delete(params.id);
   }
 }
