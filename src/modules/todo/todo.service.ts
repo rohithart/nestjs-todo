@@ -40,7 +40,7 @@ export class TodoService {
     return this.todoModel
       .findOneAndUpdate(
         { _id: id },
-        { $set: { is_active: true } },
+        { $set: { is_active: false } },
         { new: true },
       )
       .exec();
