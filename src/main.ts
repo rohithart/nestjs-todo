@@ -13,6 +13,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/', app, document); // Pointing to the main page.
 
+  app.enableCors();
   await app.listen(3000);
   console.log(`ToDo API is running on: ${await app.getUrl()}`);
 }
